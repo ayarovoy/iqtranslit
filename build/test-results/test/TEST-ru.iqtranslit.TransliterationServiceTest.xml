@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ru.iqtranslit.TransliterationServiceTest" tests="29" skipped="0" failures="0" errors="0" timestamp="2026-03-22T15:45:37.221Z" hostname="BigBoss" time="0.085">
+  <properties/>
+  <testcase name="returnsOnlyDiacriticFreeStringsWhenRequested()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.013"/>
+  <testcase name="generatesExtendedVariantsWithLimit()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="matchesVerifiedNameExamples()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="appliesYandexSpecificContextRules()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="addsDiacriticFreeAlternativeForDiacriticSchemes()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="returnsDistinctStringsAcrossSchemes()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.009"/>
+  <testcase name="stringApiIncludesExtendedVariantsWhenEnabled()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="keepsPunctuationAndDigitsUntouched()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="stringApiRespectsExtendedToggle()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="appliesBgnPcgnContextRules()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="appliesGost52290ContextRules()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="validatesStrictRegressionDatasetForComplexWordsAcrossAllSchemes()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.004"/>
+  <testcase name="returnsStrictResultForEveryScheme()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="exposesHasDiacriticFlag()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="keepsExtendedVariantsCompleteWhenLimitIsReached()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="supportsSingleSchemeMode()" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[1] ICAO_DOC_9303" classname="ru.iqtranslit.TransliterationServiceTest" time="0.011"/>
+  <testcase name="[2] ISO_9_GOST_779" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[3] ALA_LC" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[4] BGN_PCGN_1947" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[5] UNGEGN_1987" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="[6] GOST_R_52290_2004" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="[7] GOST_R_7034_2014" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[8] GOST_16876_71" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[9] SCHOLARLY" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="[10] YANDEX_MAPS_STYLE" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[11] WIKIPEDIA_STYLE" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <testcase name="[12] TELEGRAM_STYLE" classname="ru.iqtranslit.TransliterationServiceTest" time="0.001"/>
+  <testcase name="[13] MOSCOW_METRO_STYLE" classname="ru.iqtranslit.TransliterationServiceTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
