@@ -343,54 +343,69 @@ def _shared_extended() -> Dict[str, List[str]]:
 
 
 class RuleSetRegistry:
-    _rules: Dict[StandardScheme, SchemeRuleSet] = {
-        StandardScheme.ICAO_DOC_9303: SchemeRuleSet(
-            StandardScheme.ICAO_DOC_9303, _icao_strict(), _shared_extended()
-        ),
-        StandardScheme.ISO_9_GOST_779: SchemeRuleSet(
-            StandardScheme.ISO_9_GOST_779, _iso9_strict(), _shared_extended()
-        ),
-        StandardScheme.ALA_LC: SchemeRuleSet(
-            StandardScheme.ALA_LC, _ala_lc_strict(), _shared_extended()
-        ),
-        StandardScheme.BGN_PCGN_1947: SchemeRuleSet(
-            StandardScheme.BGN_PCGN_1947, _bgn_pcgn_strict(), _shared_extended()
-        ),
-        StandardScheme.UNGEGN_1987: SchemeRuleSet(
-            StandardScheme.UNGEGN_1987, _ungegn_strict(), _shared_extended()
-        ),
-        StandardScheme.GOST_R_52290_2004: SchemeRuleSet(
-            StandardScheme.GOST_R_52290_2004, _gost_52290_strict(), _shared_extended()
-        ),
-        StandardScheme.GOST_R_7034_2014: SchemeRuleSet(
-            StandardScheme.GOST_R_7034_2014, _gost_7034_strict(), _shared_extended()
-        ),
-        StandardScheme.GOST_16876_71: SchemeRuleSet(
-            StandardScheme.GOST_16876_71, _gost_16876_strict(), _shared_extended()
-        ),
-        StandardScheme.SCHOLARLY: SchemeRuleSet(
-            StandardScheme.SCHOLARLY, _scholarly_strict(), _shared_extended()
-        ),
-        StandardScheme.YANDEX_MAPS_STYLE: SchemeRuleSet(
-            StandardScheme.YANDEX_MAPS_STYLE, _yandex_strict(), _shared_extended()
-        ),
-        StandardScheme.WIKIPEDIA_STYLE: SchemeRuleSet(
-            StandardScheme.WIKIPEDIA_STYLE, _wikipedia_strict(), _shared_extended()
-        ),
-        StandardScheme.TELEGRAM_STYLE: SchemeRuleSet(
-            StandardScheme.TELEGRAM_STYLE, _telegram_strict(), _shared_extended()
-        ),
-        StandardScheme.MOSCOW_METRO_STYLE: SchemeRuleSet(
-            StandardScheme.MOSCOW_METRO_STYLE, _metro_strict(), _shared_extended()
-        ),
-    }
+    _rules: Dict[StandardScheme, SchemeRuleSet] = {}
 
     @classmethod
     def for_scheme(cls, scheme: StandardScheme) -> SchemeRuleSet:
-        if scheme not in cls._rules:
-            raise ValueError("Unsupported scheme: %s" % scheme)
-        return cls._rules[scheme]
+        return for_scheme(scheme)
 
     @classmethod
     def supported_schemes(cls) -> List[StandardScheme]:
-        return list(cls._rules.keys())
+        return supported_schemes()
+
+
+_RULES: Dict[StandardScheme, SchemeRuleSet] = {
+    StandardScheme.ICAO_DOC_9303: SchemeRuleSet(
+        StandardScheme.ICAO_DOC_9303, _icao_strict(), _shared_extended()
+    ),
+    StandardScheme.ISO_9_GOST_779: SchemeRuleSet(
+        StandardScheme.ISO_9_GOST_779, _iso9_strict(), _shared_extended()
+    ),
+    StandardScheme.ALA_LC: SchemeRuleSet(
+        StandardScheme.ALA_LC, _ala_lc_strict(), _shared_extended()
+    ),
+    StandardScheme.BGN_PCGN_1947: SchemeRuleSet(
+        StandardScheme.BGN_PCGN_1947, _bgn_pcgn_strict(), _shared_extended()
+    ),
+    StandardScheme.UNGEGN_1987: SchemeRuleSet(
+        StandardScheme.UNGEGN_1987, _ungegn_strict(), _shared_extended()
+    ),
+    StandardScheme.GOST_R_52290_2004: SchemeRuleSet(
+        StandardScheme.GOST_R_52290_2004, _gost_52290_strict(), _shared_extended()
+    ),
+    StandardScheme.GOST_R_7034_2014: SchemeRuleSet(
+        StandardScheme.GOST_R_7034_2014, _gost_7034_strict(), _shared_extended()
+    ),
+    StandardScheme.GOST_16876_71: SchemeRuleSet(
+        StandardScheme.GOST_16876_71, _gost_16876_strict(), _shared_extended()
+    ),
+    StandardScheme.SCHOLARLY: SchemeRuleSet(
+        StandardScheme.SCHOLARLY, _scholarly_strict(), _shared_extended()
+    ),
+    StandardScheme.YANDEX_MAPS_STYLE: SchemeRuleSet(
+        StandardScheme.YANDEX_MAPS_STYLE, _yandex_strict(), _shared_extended()
+    ),
+    StandardScheme.WIKIPEDIA_STYLE: SchemeRuleSet(
+        StandardScheme.WIKIPEDIA_STYLE, _wikipedia_strict(), _shared_extended()
+    ),
+    StandardScheme.TELEGRAM_STYLE: SchemeRuleSet(
+        StandardScheme.TELEGRAM_STYLE, _telegram_strict(), _shared_extended()
+    ),
+    StandardScheme.MOSCOW_METRO_STYLE: SchemeRuleSet(
+        StandardScheme.MOSCOW_METRO_STYLE, _metro_strict(), _shared_extended()
+    ),
+}
+
+
+RuleSetRegistry._rules = _RULES
+
+
+def for_scheme(scheme: StandardScheme) -> SchemeRuleSet:
+    try:
+        return _RULES[scheme]
+    except KeyError:
+        raise ValueError("Unsupported scheme: %s" % scheme)
+
+
+def supported_schemes() -> List[StandardScheme]:
+    return list(_RULES.keys())

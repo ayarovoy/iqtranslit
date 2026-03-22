@@ -150,11 +150,11 @@ from iqtranslit_py import (
 
 service = create_default_service()
 
-request = (
-    TransliterationRequest.builder("Яровой Андрей")
-    .include_extended(True)
-    .max_extended_variants_per_scheme(50)
-    .build()
+request = TransliterationRequest(
+    source_text="Яровой Андрей",
+    include_extended=True,
+    max_extended_variants_per_scheme=50,
+    schemes=(StandardScheme.ALA_LC,),
 )
 
 result = service.transliterate(request, StandardScheme.ALA_LC)
@@ -166,6 +166,17 @@ values = service.transliterate_to_strings(
     TransliterationStringOutput.WITHOUT_DIACRITICS_ONLY,
 )
 print(values)
+```
+
+Альтернативно (если удобнее fluent-стиль) можно использовать builder:
+
+```python
+request = (
+    TransliterationRequest.builder("Яровой Андрей")
+    .include_extended(True)
+    .max_extended_variants_per_scheme(50)
+    .build()
+)
 ```
 
 ### Запуск тестов Python

@@ -4,6 +4,7 @@ from .models import (
     TransliterationResult,
     TransliterationStringOutput,
     TransliterationVariant,
+    make_request,
 )
 from .service import DefaultTransliterationService, TransliterationService
 
@@ -21,4 +22,5 @@ __all__ = [
     "TransliterationStringOutput",
     "TransliterationVariant",
     "create_default_service",
+    "make_request",
 ]

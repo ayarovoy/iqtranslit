@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, List, Optional
+from abc import ABC, abstractmethod
+from typing import Iterable, List, Optional, Set
 
 from .diacritics import simplify
 from .engine import TransliterationEngine
@@ -11,25 +12,28 @@ from .models import (
     TransliterationStringOutput,
     TransliterationVariant,
 )
-from .rules import RuleSetRegistry
+from .rules import for_scheme, supported_schemes
 
 
-class TransliterationService:
+class TransliterationService(ABC):
+    @abstractmethod
     def transliterate_all(self, request: TransliterationRequest) -> TransliterationResult:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def transliterate(
         self, request: TransliterationRequest, scheme: StandardScheme
     ) -> TransliterationResult:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def transliterate_to_strings(
         self,
         request: TransliterationRequest,
         scheme: Optional[StandardScheme] = None,
         output: TransliterationStringOutput = TransliterationStringOutput.FULL,
     ) -> List[str]:
-        raise NotImplementedError
+        pass
 
 
 class DefaultTransliterationService(TransliterationService):
@@ -45,7 +49,7 @@ class DefaultTransliterationService(TransliterationService):
         extended_results: List[TransliterationVariant] = []
 
         for scheme in schemes:
-            rule_set = RuleSetRegistry.for_scheme(scheme)
+            rule_set = for_scheme(scheme)
             strict_value = self.engine.transliterate_strict(request.source_text, rule_set)
             strict_variant = TransliterationVariant(scheme, request.source_text, strict_value)
             strict_results.append(strict_variant)
@@ -102,7 +106,7 @@ class DefaultTransliterationService(TransliterationService):
 
     def _resolve_schemes(self, requested_schemes: Iterable[StandardScheme]) -> List[StandardScheme]:
         if not requested_schemes:
-            return RuleSetRegistry.supported_schemes()
+            return supported_schemes()
         return list(requested_schemes)
 
     def _to_distinct_strings(
@@ -110,20 +114,22 @@ class DefaultTransliterationService(TransliterationService):
     ) -> List[str]:
         if output is None:
             raise ValueError("output must not be null")
-        values: Dict[str, None] = {}
-        self._add_variant_strings(values, result.strict_results, output)
-        self._add_variant_strings(values, result.extended_results, output)
-        return list(values.keys())
+        values: List[str] = []
+        seen: Set[str] = set()
+        self._add_variant_strings(values, seen, result.strict_results, output)
+        self._add_variant_strings(values, seen, result.extended_results, output)
+        return values
 
     def _add_variant_strings(
         self,
-        values: Dict[str, None],
+        values: List[str],
+        seen: Set[str],
         variants: Iterable[TransliterationVariant],
         output: TransliterationStringOutput,
     ) -> None:
         for variant in variants:
             if output == TransliterationStringOutput.FULL or not variant.has_diacritic:
-                values.setdefault(variant.transliterated_text, None)
+                self._append_unique(values, seen, variant.transliterated_text)
 
     def _add_strict_diacritic_fallback(
         self,
@@ -144,24 +150,28 @@ class DefaultTransliterationService(TransliterationService):
     def _enrich_with_diacritic_free_variants(
         self, strict_value: str, extended: List[str], limit: int
     ) -> List[str]:
-        values: Dict[str, None] = {}
+        values: List[str] = []
+        seen: Set[str] = set()
         for value in extended:
-            values.setdefault(value, None)
+            self._append_unique(values, seen, value)
 
-        snapshot = list(values.keys())
-        for value in snapshot:
-            self._add_simplified_variant(values, value, strict_value)
+        for value in list(values):
+            self._add_simplified_variant(values, seen, value, strict_value)
             if len(values) >= limit:
                 break
 
-        result = list(values.keys())
-        if len(result) > limit:
-            return result[:limit]
-        return result
+        return values[:limit]
 
     def _add_simplified_variant(
-        self, values: Dict[str, None], candidate: str, strict_value: str
+        self, values: List[str], seen: Set[str], candidate: str, strict_value: str
     ) -> None:
         simplified = simplify(candidate)
         if simplified != candidate and simplified != strict_value:
-            values.setdefault(simplified, None)
+            self._append_unique(values, seen, simplified)
+
+    @staticmethod
+    def _append_unique(values: List[str], seen: Set[str], candidate: str) -> None:
+        if candidate in seen:
+            return
+        seen.add(candidate)
+        values.append(candidate)

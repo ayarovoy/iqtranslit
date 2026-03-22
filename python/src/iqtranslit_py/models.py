@@ -83,6 +83,8 @@ class TransliterationRequest:
             raise ValueError("sourceText must not be null")
         if self.max_extended_variants_per_scheme <= 0:
             raise ValueError("maxExtendedVariantsPerScheme must be positive")
+        normalized_schemes = _normalize_schemes(self.schemes)
+        object.__setattr__(self, "schemes", normalized_schemes)
 
     @classmethod
     def builder(cls, source_text: str) -> "TransliterationRequestBuilder":
@@ -122,3 +124,28 @@ class TransliterationRequestBuilder:
             max_extended_variants_per_scheme=self._max_extended_variants_per_scheme,
             schemes=self._schemes,
         )
+
+
+def _normalize_schemes(
+    schemes: Optional[Iterable[StandardScheme]],
+) -> Tuple[StandardScheme, ...]:
+    if not schemes:
+        return tuple()
+    unique: Set[StandardScheme] = set(schemes)
+    ordered = [scheme for scheme in StandardScheme if scheme in unique]
+    return tuple(ordered)
+
+
+def make_request(
+    source_text: str,
+    *,
+    include_extended: bool = False,
+    max_extended_variants_per_scheme: int = DEFAULT_MAX_EXTENDED_PER_SCHEME,
+    schemes: Optional[Iterable[StandardScheme]] = None,
+) -> TransliterationRequest:
+    return TransliterationRequest(
+        source_text=source_text,
+        include_extended=include_extended,
+        max_extended_variants_per_scheme=max_extended_variants_per_scheme,
+        schemes=_normalize_schemes(schemes),
+    )
